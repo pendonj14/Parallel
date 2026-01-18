@@ -1,0 +1,11 @@
+[33mcommit 9a30c6c8d725c456b20db04f408b9485fc7e7b30[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Joseph Pendon <pendon.josephjr@gmail.com>
+Date:   Sun Jan 18 13:21:09 2026 +0000
+
+    Made the calculator infinite run logic and added addition function
+
+[33mcommit 5c690050328bee85aadc10c024db6b4ea8639f3a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: pendonj14 <145426903+pendonj14@users.noreply.github.com>
+Date:   Sun Jan 18 15:45:09 2026 +0800
+
+    Initial commit
