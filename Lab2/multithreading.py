@@ -14,5 +14,13 @@ def compute_gwa(grades):
 
     threads = []
 
+    for grade in grades_list:
+        t = threading.Thread(target=compute_gwa, args=([grade],))
+        threads.append(t)
+        t.start()
 
+    for t in threads:
+        t.join()
+
+    print("All threads finished.")
                                 
