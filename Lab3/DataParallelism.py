@@ -29,3 +29,17 @@ def compute_employee_payroll(employee):
         "net": net_salary,
         "pid": process_id
     }
+
+def main():
+    with ProcessPoolExecutor() as executor:
+        results = list(executor.map(compute_employee_payroll, employees))
+
+    for res in results:
+        print(f"Employee: {res['name']} (Processed by PID: {res['pid']})")
+        print(f"  Gross Salary:     {res['gross']}")
+        print(f"  Total Deduction:  {res['total_deductions']:.2f}")
+        print(f"  Net Salary:       {res['net']:.2f}")
+        print("-" * 45)
+
+if __name__ == "__main__":
+    main()
