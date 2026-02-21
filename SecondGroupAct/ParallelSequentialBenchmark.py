@@ -14,3 +14,9 @@ def process_request(request_id):
         saved_record = computation * 2
 
     return saved_record
+
+def sequential_processing(requests):
+    results = []
+    for req in requests:
+        results.append(process_request(req))
+    return results
