@@ -1,0 +1,16 @@
+import time
+import random
+from multiprocessing import Pool, cpu_count, Lock
+
+
+lock = Lock()
+
+def process_request(request_id):
+    computation = 0
+    for _ in range(80000):
+        computation += random.randint(1, 5)
+
+    with lock:
+        saved_record = computation * 2
+
+    return saved_record
