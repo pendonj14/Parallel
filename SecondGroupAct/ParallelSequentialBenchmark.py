@@ -20,3 +20,8 @@ def sequential_processing(requests):
     for req in requests:
         results.append(process_request(req))
     return results
+
+def parallel_processing(requests):
+    with Pool(cpu_count()) as pool:
+        results = pool.map(process_request, requests)
+    return results
