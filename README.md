@@ -16,11 +16,6 @@
       <b>Koby Christian Atilano</b><br/>
       <a href="https://github.com/towtu"><img src="https://img.shields.io/badge/GitHub-towtu-181717?style=flat&logo=github" alt="GitHub"/></a>
     </td>
-    <td align="center" width="250" style="padding: 10px;">
-      <img src="https://github.com/mizuki1113.png" width="90" style="border-radius: 50%; border: 3px solid #FDB927;" alt="Precious Gamalo"/><br/><br/>
-      <b>Precious Gamalo</b><br/>
-      <a href="https://github.com/mizuki1113"><img src="https://img.shields.io/badge/GitHub-6reenhorn-181717?style=flat&logo=github" alt="GitHub"/></a>
-    </td>
   </tr>
 </table>
 
