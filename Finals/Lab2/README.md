@@ -7,3 +7,14 @@ The most striking observation from this activity is how misleading the assumptio
 The sorting implementation was relatively straightforward—merge sort's recursive structure maps well onto parallel chunks. The real challenge was the merge phase after parallel sorting. Each process returns a sorted chunk, but combining four sorted lists into one globally sorted list is itself an O(n) operation that runs sequentially. This serial bottleneck limits the overall speedup, which connects directly to Amdahl's Law: the portion of work that cannot be parallelized puts a ceiling on the total improvement.
  
 For searching, the results were even more eye-opening. Linear search is so fast sequentially (microseconds for small data, milliseconds for large) that spawning processes adds orders of magnitude more time than it saves. This taught me that parallelism is a tool for compute-heavy problems, not a universal accelerator. Understanding when *not* to parallelize is just as important as knowing how.
+
+## Richter Anthony P. Yap
+ 
+Working on the parallel search implementation gave me hands-on experience with inter-process communication, and it was more complex than I anticipated. Using `multiprocessing.Queue` to send results from workers back to the main process required careful design: each worker needs to always put something into the queue (either a found index or -1), otherwise the main process blocks forever waiting for a result that never arrives.
+ 
+The offset calculation was another subtle point. Each worker searches a local chunk, so if it finds the target at local index 3, the global index is `offset + 3`. Getting this wrong would return incorrect positions—correctness at the coordination level, not just the algorithm level.
+ 
+What surprised me most about the benchmark results was how the overhead of parallel searching was nearly constant (~100–400ms) regardless of dataset size. This confirms that the dominant cost is process lifecycle management, not the actual search computation. For parallelism to be worthwhile, the per-process workload needs to be substantial—on the order of seconds, not milliseconds.
+ 
+I also gained appreciation for how Python's `multiprocessing` module handles data sharing. Data passed to workers is pickled (serialized), sent to the child process, and unpickled there. For a million-element list, this serialization cost is significant and represents pure overhead with no computational benefit.
+ 
