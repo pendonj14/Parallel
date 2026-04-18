@@ -23,3 +23,13 @@ I also gained appreciation for how Python's `multiprocessing` module handles dat
 My main responsibility in this project was to build and test the search algorithms. I developed sequential_search.py, which looks through data one by one, and parallel_search.py, which speeds things up by splitting the work. To make the parallel version work, I had to divide the data into four parts, give each part to a different worker process, and use a "Queue" to make sure they could send the correct result back to me. I also had to make sure my tests were fair by using the exact same data for both versions so I could see which one was actually faster.
 
 Looking at the whole activity, I learned that there is a big difference between writing code that runs in a straight line and code that runs at the same time. While the sequential way is much easier to write and fix, the parallel way is great for handling huge amounts of data. However, I also saw that parallel code isn't always better because starting up all those processes takes extra time and effort. This project helped me understand that I need to choose the right tool based on how much data I'm dealing with and how fast the system needs to be.
+
+## Joseph T. Pendon
+
+This activity changed how I think about algorithm design. Before, I viewed parallelism as strictly better—why use one core when you can use four? The benchmarks conclusively demonstrated that parallelism has a break-even point, and for many practical workloads, we never reach it.
+ 
+The implementation process also highlighted the difference between embarrassingly parallel problems and problems with dependencies. Sorting chunks independently is embarrassingly parallel—no communication is needed during the sort phase. But merging the results reintroduces a sequential dependency. Searching is similar: each chunk can be searched independently, but resolving which worker found the earliest occurrence requires coordination.
+ 
+If I were to extend this project, I'd explore several directions: using `multiprocessing.Array` or shared memory to avoid the pickling overhead, implementing parallel merge where the merge step itself is parallelized, testing with CPU-intensive operations like matrix multiplication where parallelism shows clearer benefits, and comparing `multiprocessing` with `concurrent.futures` and `threading` to understand the trade-offs between processes and threads in Python.
+ 
+The bottom line: parallelism is powerful but nuanced. It requires understanding both the algorithm's structure and the system's overhead characteristics to apply effectively.
