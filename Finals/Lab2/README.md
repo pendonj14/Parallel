@@ -18,3 +18,8 @@ What surprised me most about the benchmark results was how the overhead of paral
  
 I also gained appreciation for how Python's `multiprocessing` module handles data sharing. Data passed to workers is pickled (serialized), sent to the child process, and unpickled there. For a million-element list, this serialization cost is significant and represents pure overhead with no computational benefit.
  
+## Kent John J. Chavo
+
+My main responsibility in this project was to build and test the search algorithms. I developed sequential_search.py, which looks through data one by one, and parallel_search.py, which speeds things up by splitting the work. To make the parallel version work, I had to divide the data into four parts, give each part to a different worker process, and use a "Queue" to make sure they could send the correct result back to me. I also had to make sure my tests were fair by using the exact same data for both versions so I could see which one was actually faster.
+
+Looking at the whole activity, I learned that there is a big difference between writing code that runs in a straight line and code that runs at the same time. While the sequential way is much easier to write and fix, the parallel way is great for handling huge amounts of data. However, I also saw that parallel code isn't always better because starting up all those processes takes extra time and effort. This project helped me understand that I need to choose the right tool based on how much data I'm dealing with and how fast the system needs to be.
