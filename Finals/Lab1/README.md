@@ -1,22 +1,6 @@
 # Distributed Order Processing
 
 
-## Why We Removed `Manager`, `shared_orders`, and `lock`
-
-- **MPI processes don't share memory.** `mpiexec` launches independent Python
-  interpreters (possibly on different machines), so a `Manager` server in the
-  master is unreachable from workers.
-- **Manager proxies and locks can't be sent over MPI.** Pickling them and
-  shipping them via `comm.send` produces dead references — workers have no way
-  to reconnect to the master's manager process.
-- **The lock guarded against a race that doesn't exist here.** In MPI, workers
-  never touch the master's memory; each worker builds a local results list and
-  sends it back with `comm.send`.
-- **Message passing *is* the synchronization.** The master receives one message
-  at a time and merges results into its own list, so no concurrent writes ever
-  happen and no lock is needed.
-
-
 
 ## Reflection Questions
 
@@ -47,4 +31,8 @@ Three things working together:
 - Single writer. Only the master appends to shared_orders, so there's no race condition by construction.
 - Synchronous collection. The master blocks on comm.recv for every worker before printing, guaranteeing all results have arrived.
 - Deterministic final ordering. Results arrive in whatever order workers finish, but sorted(shared_orders, key=lambda x: x["order_id"]) produces the same output every run regardless of timing.
+
+
+
+
 
