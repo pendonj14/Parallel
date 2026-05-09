@@ -157,3 +157,21 @@ The most challenging part of the activity was configuring IAM permissions in GCP
 In terms of trade-offs, Pub/Sub added significant reliability by decoupling the API from the worker, but it also introduced additional latency since every vote had to pass through a message queue before reaching Firestore. Cloud Run provided automatic scaling and deployment convenience, but the worker occasionally required redeployment to pick up configuration changes. Edge computing distributed the vote generation load across multiple independent sources, reducing pressure on any single node, but it also introduced variability and required network communication that a purely local system would not need. Overall, this activity reinforced that distributed systems offer powerful advantages in fault tolerance and scalability, but they require careful attention to permissions, asynchronous behavior, and system-level debugging.
 
 
+---
+
+### [Koby Christian O. Atilano]
+
+
+Working on this distributed voting system gave me a practical understanding of how distributed components interact in a cloud environment. Before this activity, I understood the theory behind Pub/Sub messaging and Cloud Run services, but actually deploying and connecting them revealed complexities that textbooks do not fully capture.
+
+
+During normal operation, the system performed as expected. Each edge node generated votes independently and sent them to the Cloud Run API, which forwarded them to Pub/Sub. The worker then pulled messages and stored them in Firestore. What struck me was how smoothly the decoupled components communicated — the API had no knowledge of whether the worker was running or not, and this separation turned out to be the key to the system's resilience.
+
+
+When we tested message duplication by sending each vote three times, I expected to see triple the documents in Firestore. Instead, the idempotent write mechanism ensured that only one document existed per unique vote. The worker still processed all three messages, but the Firestore set operation simply overwrote the same document with identical data. This was an important lesson in how distributed systems handle duplicate delivery — rather than preventing duplicates at the transport layer, we handled them at the storage layer through careful document ID design.
+
+
+The worker failure scenario was the most instructive part of the activity. With the worker scaled to zero, I could see messages accumulating in Pub/Sub through the GCP console while Firestore remained unchanged. The edge nodes had no indication that anything was wrong downstream, which demonstrated the principle of failure isolation in distributed systems. When the worker came back, it processed the entire backlog in seconds, and the high latency values in the logs (over 300 seconds) clearly showed how long each vote had been queued.
+
+
+One challenge I faced was understanding the asynchronous nature of the system. Unlike a simple request-response application where you see immediate results, this system had delays and buffering between components. Learning to read logs across multiple services and correlate events between the API, Pub/Sub, and the worker was a valua
