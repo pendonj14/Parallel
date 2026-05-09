@@ -175,3 +175,18 @@ The worker failure scenario was the most instructive part of the activity. With 
 
 
 One challenge I faced was understanding the asynchronous nature of the system. Unlike a simple request-response application where you see immediate results, this system had delays and buffering between components. Learning to read logs across multiple services and correlate events between the API, Pub/Sub, and the worker was a valua
+
+---
+
+### Richter Anthony P. Yap
+
+This activity provided me with hands-on experience in building and testing a distributed system using real cloud infrastructure. The most valuable takeaway was understanding how failure and recovery behave differently in a distributed system compared to a monolithic application.
+
+In a traditional application, if the backend goes down, the entire system stops working. In our distributed voting system, when the worker service failed, only the final storage step was affected. The Cloud Run API continued accepting votes, and Pub/Sub continued queuing them. From the perspective of the edge nodes, the system appeared to be functioning normally. This isolation of failure to a single component is a fundamental advantage of distributed architectures, and seeing it work in practice was more impactful than reading about it in theory.
+
+The performance behavior under different loads was also interesting to observe. During normal operation with a single edge node, votes appeared in Firestore within a few seconds of being generated. When we ran multiple edge nodes simultaneously, the system handled the increased throughput without any noticeable degradation. The Cloud Run API and Pub/Sub scaled automatically to accommodate the higher request rate, which demonstrated the elasticity of cloud-based distributed systems.
+
+The IAM permissions issue was an unexpected challenge that consumed significant debugging time. The error messages in Cloud Run logs pointed to specific missing permissions, but understanding which IAM role provided which permission required reading through GCP documentation. This taught me that in distributed cloud systems, infrastructure configuration is just as important as application logic, and that security and access control add a layer of complexity that must be carefully managed.
+
+Looking at trade-offs, I noticed that the Pub/Sub layer added roughly one to two seconds of latency to each vote under normal conditions. This is the cost of decoupled communication — the benefit is reliability and fault tolerance, but the trade-off is that the system can never be as fast as a direct connection between the API and the database. For a voting system where correctness matters more than speed, this trade-off is clearly worthwhile.
+
