@@ -33,3 +33,16 @@ def send_vote(vote, retries=3):
             print(f"[Node {NODE_ID}] Attempt {attempt+1} failed: {e}")
             time.sleep(1)
     return False
+
+def run_edge_node():
+    print(f"Edge Node {NODE_ID} started. Sending votes...")
+    vote_count = 0
+    while True:
+        vote = generate_vote()
+        send_vote(vote)
+        vote_count += 1
+        print(f"[Node {NODE_ID}] Total votes sent: {vote_count}")
+        time.sleep(random.uniform(1, 3))
+
+if __name__ == "__main__":
+    run_edge_node()
