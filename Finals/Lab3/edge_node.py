@@ -19,3 +19,17 @@ def generate_vote():
         "timestamp": time.time()
     }
 
+
+def send_vote(vote, retries=3):
+    for attempt in range(retries):
+        try:
+            response = requests.post(API_URL, json=vote)
+            if response.status_code == 200:
+                print(f"[Node {NODE_ID}] Vote sent: {vote['user_id'][:8]}... | Choice: {vote['choice']}")
+                return True
+            else:
+                print(f"[Node {NODE_ID}] Server error: {response.status_code}")
+        except Exception as e:
+            print(f"[Node {NODE_ID}] Attempt {attempt+1} failed: {e}")
+            time.sleep(1)
+    return False
