@@ -190,3 +190,12 @@ The IAM permissions issue was an unexpected challenge that consumed significant 
 
 Looking at trade-offs, I noticed that the Pub/Sub layer added roughly one to two seconds of latency to each vote under normal conditions. This is the cost of decoupled communication — the benefit is reliability and fault tolerance, but the trade-off is that the system can never be as fast as a direct connection between the API and the database. For a voting system where correctness matters more than speed, this trade-off is clearly worthwhile.
 
+---
+
+### Kent John J. Chavo
+
+Working on this distributed voting system made me realize how different it feels compared to writing a regular sequential program. Getting everything configured in GCP alone, from enabling APIs to setting up Pub/Sub and deploying to Cloud Run, already took a significant amount of time before any actual coding began. The activity was longer than expected, and a lot of that time went into setup and debugging rather than the implementation itself.
+
+My main contribution to the group was implementing the `send_vote` function with retry logic in the edge node layer. This was where fault tolerance became concrete for me. A failed HTTP request does not have to mean lost data because the edge node  can retry on its own after a short delay. It also made me think about duplicate transmissions, which is where idempotency on the backend came in. Firestore using a document ID based on user and poll IDs to silently prevent duplicate entries was a small detail that made a big difference in how the system maintains data consistency.
+
+Overall, this activity showed me that building a distributed system involves a lot more coordination than just writing working code. Each component, from the edge node to Cloud Run to Pub/Sub to Firestore, has its own responsibility and failure mode. Even just working on one piece of the pipeline gave me a clearer picture of how much design thinking goes into making a system that can handle failures gracefully rather than breaking entirely.
